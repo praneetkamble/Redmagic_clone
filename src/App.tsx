@@ -17,15 +17,6 @@ import {
 // Import modules
 import CustomCursor from "./components/CustomCursor";
 import HeroSection from "./components/HeroSection";
-import SpecsSection from "./components/SpecsSection";
-import ThreeLaptopViewer from "./components/ThreeLaptopViewer";
-import PerformanceSection from "./components/PerformanceSection";
-import CoolingSection from "./components/CoolingSection";
-import DisplaySection from "./components/DisplaySection";
-import PortsSection from "./components/PortsSection";
-import RGBKeyboardSection from "./components/RGBKeyboardSection";
-import ComparisonSection from "./components/ComparisonSection";
-import FinalCTASection from "./components/FinalCTASection";
 import logoImg from "./assets/images/logo.png";
 
 export default function App() {
@@ -221,78 +212,10 @@ export default function App() {
 
       <main className="relative z-10 w-full">
         <HeroSection 
-          onExploreClick={() => scrollToSection("laptop-3d-system")}
-          onBuyClick={() => scrollToSection("final-checkout")}
+          onExploreClick={() => window.open("https://redmagic.gg/pages/redmagic-titan-16-pro", "_blank")}
+          onBuyClick={() => window.open("https://redmagic.gg/pages/redmagic-titan-16-pro", "_blank")}
         />
-
-        <SpecsSection />
-
-        <div className="relative py-24 bg-[#050505] border-t border-b border-white/5" id="laptop-3d-system">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mb-12 text-center md:text-left space-y-4">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.2em] text-[#06b6d4] bg-cyan-950/20 px-3 py-1 rounded-sm border border-cyan-500/20">
-              <Compass size={12} className="animate-spin text-cyan-400" />
-              CYBORG CHASSIS LAB (INTERACTIVE ORBITS)
-            </span>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div className="space-y-2">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display text-white tracking-tight italic font-black uppercase">
-                  INTERACTIVE{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                    3D STRUCTURE
-                  </span>
-                </h2>
-                <p className="text-gray-400 max-w-xl text-sm leading-relaxed font-sans">
-                  Rotate the real mechanical model, deploy the hinge angle lid, trigger the fan turbines and inspect custom lighting boards.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 h-[650px] md:h-[600px]">
-            <div className="w-full h-full border border-white/5 bg-[#09090f] rounded-sm overflow-hidden shadow-2xl relative">
-              <ThreeLaptopViewer />
-            </div>
-          </div>
-        </div>
-
-        <PerformanceSection />
-
-        <CoolingSection />
-
-        <DisplaySection />
-
-        <PortsSection />
-
-        <RGBKeyboardSection />
-
-        <ComparisonSection />
-
-        <FinalCTASection onBuySubmit={() => playCyberBeep(2200, "sawtooth", 0.45)} />
       </main>
-
-      <footer className="relative bg-[#050505] border-t border-white/5 py-12 px-6 text-center text-xs font-mono text-gray-500">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4 text-left">
-            <img 
-              src={logoImg} 
-              alt="REDMAGIC Logo" 
-              className="h-10 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity"
-            />
-            <div className="space-y-1 text-xs">
-              <span className="font-display font-bold text-white tracking-widest text-sm block">
-                REDMAGIC TITAN
-              </span>
-              <span>2026 REDMAGIC INC • INTEL & NVIDIA REGISTERED TRADEMARKS</span>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <a href="#hero-sec" onClick={(e) => { e.preventDefault(); scrollToSection("hero-sec"); }} className="hover:text-cyan-400 transition-colors">BACK TO TOP</a>
-            <span>•</span>
-            <span className="text-[#06b6d4]">SECURED WITH CRYPTO LANES</span>
-          </div>
-        </div>
-      </footer>
 
       <div className="fixed bottom-6 right-6 z-40 pointer-events-auto select-none font-mono text-[8px] sm:text-[9px] tracking-[0.2em] text-white/30 hover:text-cyan-400 transition-colors duration-500 bg-black/60 backdrop-blur-md px-3 py-1.5 border border-white/5 rounded-sm flex items-center gap-2 shadow-2xl group">
         <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/30 group-hover:bg-cyan-400 transition-colors animate-pulse" />

@@ -189,21 +189,6 @@ export default function HeroSection({ onExploreClick, onBuyClick }: HeroSectionP
           </motion.div>
         </div>
       </div>
-
-      {/* FOOTER OF HERO - SCROLL INDICATOR */}
-      <div className="relative z-10 mx-auto text-center mt-6 flex flex-col items-center gap-1.5 justify-end">
-        <span className="text-[10px] font-mono tracking-[0.2em] text-cyan-400/80 uppercase">
-          TRIGGER SCANNER FOR THERMALS DECK
-        </span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-          onClick={onExploreClick}
-          className="w-8 h-8 rounded-full border border-cyan-500/30 flex items-center justify-center text-cyan-400 hover:border-cyan-400 hover:bg-cyan-500/10 cursor-pointer transition-all duration-300"
-        >
-          <ArrowDown size={14} />
-        </motion.div>
-      </div>
     </section>
   );
 }
