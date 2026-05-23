@@ -39,7 +39,7 @@ export default function App() {
     let visualProgress = 0;
     let targetProgress = 12;
     const startedAt = performance.now();
-    const minimumShowTime = 2400;
+    const minimumShowTime = 4200;
     const maximumBufferTime = 11000;
 
     const updateTarget = (nextProgress: number) => {
