@@ -39,7 +39,8 @@ export default function App() {
     let visualProgress = 0;
     let targetProgress = 12;
     const startedAt = performance.now();
-    const minimumShowTime = 4200;
+    const launchedFromPortfolio = new URLSearchParams(window.location.search).get("buffer") === "portfolio";
+    const minimumShowTime = launchedFromPortfolio ? 5200 : 4200;
     const maximumBufferTime = 11000;
 
     const updateTarget = (nextProgress: number) => {
