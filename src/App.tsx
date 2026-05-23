@@ -18,6 +18,15 @@ import {
 import CustomCursor from "./components/CustomCursor";
 import HeroSection from "./components/HeroSection";
 import Preloader from "./components/Preloader";
+import SpecsSection from "./components/SpecsSection";
+import ThreeLaptopViewer from "./components/ThreeLaptopViewer";
+import PerformanceSection from "./components/PerformanceSection";
+import CoolingSection from "./components/CoolingSection";
+import DisplaySection from "./components/DisplaySection";
+import PortsSection from "./components/PortsSection";
+import RGBKeyboardSection from "./components/RGBKeyboardSection";
+import ComparisonSection from "./components/ComparisonSection";
+import FinalCTASection from "./components/FinalCTASection";
 import logoImg from "./assets/images/logo.png";
 
 const preloadableImages = Object.values(
@@ -370,6 +379,17 @@ export default function App() {
           onExploreClick={() => window.open("https://redmagic.gg/pages/redmagic-titan-16-pro", "_blank")}
           onBuyClick={() => window.open("https://redmagic.gg/pages/redmagic-titan-16-pro", "_blank")}
         />
+        <SpecsSection />
+        <section className="relative h-[100svh] min-h-[760px] bg-[#020204] border-t border-white/5">
+          <ThreeLaptopViewer />
+        </section>
+        <PerformanceSection />
+        <CoolingSection />
+        <DisplaySection />
+        <PortsSection />
+        <RGBKeyboardSection />
+        <ComparisonSection />
+        <FinalCTASection onBuySubmit={() => playCyberBeep(1200, "triangle", 0.22)} />
       </main>
 
       <div className="fixed bottom-6 right-6 z-40 pointer-events-auto select-none font-mono text-[8px] sm:text-[9px] tracking-[0.2em] text-white/30 hover:text-cyan-400 transition-colors duration-500 bg-black/60 backdrop-blur-md px-3 py-1.5 border border-white/5 rounded-sm flex items-center gap-2 shadow-2xl group">
