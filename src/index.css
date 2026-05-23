@@ -78,7 +78,6 @@
 
 /* Custom Scanline details */
 .scanlines {
-  position: relative;
   overflow: hidden;
 }
 .scanlines::before {

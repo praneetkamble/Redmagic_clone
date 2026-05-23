@@ -20,6 +20,14 @@ import HeroSection from "./components/HeroSection";
 import Preloader from "./components/Preloader";
 import logoImg from "./assets/images/logo.png";
 
+const preloadableImages = Object.values(
+  import.meta.glob("./assets/images/*.{png,jpg,jpeg,webp,avif,svg}", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }),
+) as string[];
+
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -27,43 +35,141 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let progress = 0;
-    
-    // Sci-fi gradual progress simulation with real-world state synchronization
-    const timer = setInterval(() => {
-      if (progress < 90) {
-        progress += Math.floor(Math.random() * 5) + 3;
-      } else if (document.readyState === "complete") {
-        progress += Math.floor(Math.random() * 4) + 2;
-      } else {
-        // Clamp at 90% if assets are still actively being loaded in the browser
-        progress = 90;
-      }
-      
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(timer);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      }
-      
-      setLoadingProgress(progress);
-    }, 45);
+    let cancelled = false;
+    let visualProgress = 0;
+    let targetProgress = 12;
+    const startedAt = performance.now();
+    const minimumShowTime = 2400;
+    const maximumBufferTime = 11000;
 
-    const handleLoadComplete = () => {
-      progress = Math.max(progress, 90);
+    const updateTarget = (nextProgress: number) => {
+      targetProgress = Math.max(targetProgress, Math.min(nextProgress, 96));
     };
 
-    if (document.readyState === "complete") {
-      handleLoadComplete();
-    } else {
-      window.addEventListener("load", handleLoadComplete);
-    }
+    const progressTimer = window.setInterval(() => {
+      if (cancelled) return;
+
+      visualProgress += Math.max((targetProgress - visualProgress) * 0.12, 0.35);
+      setLoadingProgress(Math.min(99, Math.round(visualProgress)));
+    }, 45);
+
+    const waitForWindowLoad = () => {
+      if (document.readyState === "complete") return Promise.resolve();
+
+      return new Promise<void>((resolve) => {
+        window.addEventListener("load", () => resolve(), { once: true });
+      });
+    };
+
+    const waitForFonts = () => {
+      if (!document.fonts?.ready) return Promise.resolve();
+      return document.fonts.ready.catch(() => undefined);
+    };
+
+    const waitForDomToSettle = () =>
+      new Promise<void>((resolve) => {
+        let settleTimer = 0;
+
+        const finish = () => {
+          window.clearTimeout(settleTimer);
+          observer.disconnect();
+          resolve();
+        };
+
+        const observer = new MutationObserver(() => {
+          window.clearTimeout(settleTimer);
+          settleTimer = window.setTimeout(finish, 350);
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+        settleTimer = window.setTimeout(finish, 350);
+        window.setTimeout(finish, 2500);
+      });
+
+    const decodeImage = (src: string) =>
+      new Promise<void>((resolve) => {
+        if (!src || src.startsWith("data:")) {
+          resolve();
+          return;
+        }
+
+        const img = new Image();
+        const complete = () => resolve();
+        const timeoutId = window.setTimeout(complete, 7000);
+
+        img.decoding = "async";
+        img.onload = () => {
+          window.clearTimeout(timeoutId);
+          if (img.decode) {
+            img.decode().catch(() => undefined).finally(complete);
+          } else {
+            complete();
+          }
+        };
+        img.onerror = () => {
+          window.clearTimeout(timeoutId);
+          complete();
+        };
+        img.src = src;
+      });
+
+    const waitForImages = async () => {
+      await waitForDomToSettle();
+
+      const imageUrls = new Set<string>(preloadableImages);
+      Array.from(document.images).forEach((img) => {
+        const src = img.currentSrc || img.src;
+        if (src) imageUrls.add(src);
+      });
+
+      const urls = Array.from(imageUrls);
+      if (!urls.length) {
+        updateTarget(85);
+        return;
+      }
+
+      let completedImages = 0;
+      await Promise.all(
+        urls.map((src) =>
+          decodeImage(src).finally(() => {
+            completedImages += 1;
+            updateTarget(20 + (completedImages / urls.length) * 70);
+          }),
+        ),
+      );
+    };
+
+    const completeLoading = async () => {
+      await Promise.race([
+        Promise.all([
+          waitForWindowLoad().then(() => updateTarget(30)),
+          waitForFonts().then(() => updateTarget(45)),
+          waitForImages(),
+        ]),
+        new Promise((resolve) => window.setTimeout(resolve, maximumBufferTime)),
+      ]);
+
+      if (cancelled) return;
+
+      const elapsed = performance.now() - startedAt;
+      const remaining = Math.max(0, minimumShowTime - elapsed);
+      updateTarget(100);
+
+      window.setTimeout(() => {
+        if (cancelled) return;
+        window.clearInterval(progressTimer);
+        setLoadingProgress(100);
+        window.setTimeout(() => {
+          if (!cancelled) setIsLoading(false);
+        }, 650);
+      }, remaining);
+    };
+
+    completeLoading();
 
     return () => {
-      clearInterval(timer);
-      window.removeEventListener("load", handleLoadComplete);
+      cancelled = true;
+      window.clearInterval(progressTimer);
     };
   }, []);
 
