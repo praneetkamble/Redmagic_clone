@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Zap, 
@@ -17,11 +17,55 @@ import {
 // Import modules
 import CustomCursor from "./components/CustomCursor";
 import HeroSection from "./components/HeroSection";
+import Preloader from "./components/Preloader";
 import logoImg from "./assets/images/logo.png";
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let progress = 0;
+    
+    // Sci-fi gradual progress simulation with real-world state synchronization
+    const timer = setInterval(() => {
+      if (progress < 90) {
+        progress += Math.floor(Math.random() * 5) + 3;
+      } else if (document.readyState === "complete") {
+        progress += Math.floor(Math.random() * 4) + 2;
+      } else {
+        // Clamp at 90% if assets are still actively being loaded in the browser
+        progress = 90;
+      }
+      
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(timer);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      }
+      
+      setLoadingProgress(progress);
+    }, 45);
+
+    const handleLoadComplete = () => {
+      progress = Math.max(progress, 90);
+    };
+
+    if (document.readyState === "complete") {
+      handleLoadComplete();
+    } else {
+      window.addEventListener("load", handleLoadComplete);
+    }
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("load", handleLoadComplete);
+    };
+  }, []);
 
   // Play feedback audio beep
   const playCyberBeep = (freq = 800, type: OscillatorType = "sine", duration = 0.08) => {
@@ -68,6 +112,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-cyan-500 selection:text-black custom-cursor-active scanlines relative">
       <CustomCursor />
+
+      <AnimatePresence mode="wait">
+        {isLoading && <Preloader progress={loadingProgress} />}
+      </AnimatePresence>
 
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/85 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
