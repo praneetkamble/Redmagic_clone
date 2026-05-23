@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: "/Redmagic_clone/",
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
